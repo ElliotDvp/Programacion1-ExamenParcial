@@ -29,5 +29,13 @@ namespace ExParcial.Models
 
         [Timestamp]
         public byte[]? RowVersion { get; set; }
+
+         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (HorarioFin <= HorarioInicio)
+            yield return new ValidationResult("HorarioFin debe ser mayor que HorarioInicio", new[] { nameof(HorarioFin), nameof(HorarioInicio) });
+        yield break;
+    }
+
     }
 }
