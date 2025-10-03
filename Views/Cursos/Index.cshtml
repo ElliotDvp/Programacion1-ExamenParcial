@@ -1,0 +1,61 @@
+<h2 class="mb-4">Listado de Cursos</h2>
+
+<form method="get" asp-action="Index" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label for="Nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="Nombre" name="Nombre"
+               value="@((ViewData["Filters"] as ExParcial.Models.CursoFilters)?.Nombre)" />
+    </div>
+    <div class="col-md-2">
+        <label for="CreditosMin" class="form-label">Créditos Mín.</label>
+        <input type="number" class="form-control" id="CreditosMin" name="CreditosMin"
+               value="@((ViewData["Filters"] as ExParcial.Models.CursoFilters)?.CreditosMin)" />
+    </div>
+    <div class="col-md-2">
+        <label for="CreditosMax" class="form-label">Créditos Máx.</label>
+        <input type="number" class="form-control" id="CreditosMax" name="CreditosMax"
+               value="@((ViewData["Filters"] as ExParcial.Models.CursoFilters)?.CreditosMax)" />
+    </div>
+    <div class="col-md-2">
+        <label for="HorarioInicio" class="form-label">Inicio</label>
+        <input type="time" class="form-control" id="HorarioInicio" name="HorarioInicio"
+               value="@((ViewData["Filters"] as ExParcial.Models.CursoFilters)?.HorarioInicio?.ToString(@"hh\:mm"))" />
+    </div>
+    <div class="col-md-2">
+        <label for="HorarioFin" class="form-label">Fin</label>
+        <input type="time" class="form-control" id="HorarioFin" name="HorarioFin"
+               value="@((ViewData["Filters"] as ExParcial.Models.CursoFilters)?.HorarioFin?.ToString(@"hh\:mm"))" />
+    </div>
+    <div class="col-md-12">
+        <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+        <a asp-action="Index" class="btn btn-secondary">Limpiar</a>
+    </div>
+</form>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Créditos</th>
+            <th>Cupo Máximo</th>
+            <th>Horario</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Codigo</td>
+                <td>@c.Nombre</td>
+                <td>@c.Creditos</td>
+                <td>@c.CupoMaximo</td>
+                <td>@c.HorarioInicio.ToString(@"hh\:mm") - @c.HorarioFin.ToString(@"hh\:mm")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-sm btn-info">Detalle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
