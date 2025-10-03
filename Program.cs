@@ -11,8 +11,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+
 
 var app = builder.Build();
 
@@ -30,7 +33,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -42,5 +45,26 @@ app.MapControllerRoute(
 
 app.MapRazorPages()
    .WithStaticAssets();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
+    var roleName = "Coordinador";
+    if (!await roleManager.RoleExistsAsync(roleName))
+        await roleManager.CreateAsync(new IdentityRole(roleName));
+
+    var coordEmail = builder.Configuration["SEED_COORDINADOR_EMAIL"] ?? "coordinador@uni.local";
+    var coordPwd = builder.Configuration["SEED_COORDINADOR_PASSWORD"] ?? "ChangeMe123!";
+
+    var coordUser = await userManager.FindByEmailAsync(coordEmail);
+    if (coordUser == null)
+    {
+        coordUser = new IdentityUser { UserName = coordEmail, Email = coordEmail, EmailConfirmed = true };
+        var res = await userManager.CreateAsync(coordUser, coordPwd);
+        if (res.Succeeded)
+            await userManager.AddToRoleAsync(coordUser, roleName);
+    }
+}
 app.Run();
