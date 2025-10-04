@@ -1,8 +1,69 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .hero {
+        background: linear-gradient(135deg, #eef2ff 0%, #ffffff 60%);
+        padding: 4.5rem 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 8px 24px rgba(20, 30, 60, 0.06);
+    }
+    .cta-btn {
+        padding: 0.75rem 1.25rem;
+        font-weight: 600;
+        border-radius: 0.6rem;
+    }
+    .feature-card {
+        border: 1px solid #eef0f6;
+        border-radius: 0.6rem;
+        padding: 1rem;
+        transition: transform .18s ease, box-shadow .18s ease;
+        background: #fff;
+    }
+    .feature-card:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06); }
+</style>
+
+<div class="container my-5">
+    <div class="hero text-center">
+        <h1 class="display-5 fw-bold mb-3">Portal Académico</h1>
+        <p class="lead mb-4">Explora cursos, inscríbete y gestiona matrículas de forma sencilla y segura.</p>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a class="btn btn-primary cta-btn" asp-controller="Cursos" asp-action="Index" role="button">
+                Ver Catálogo de cursos
+            </a>
+        </div>
+
+       
+    </div>
+
+    <div class="row mt-5 g-4">
+        <div class="col-md-4">
+            <div class="feature-card h-100">
+                <h5 class="mb-2">Filtrado inteligente</h5>
+                <p class="mb-0 text-muted">Busca por nombre, créditos y horario para encontrar el curso ideal rápidamente.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card h-100">
+                <h5 class="mb-2">Inscripciones seguras</h5>
+                <p class="mb-0 text-muted">Validaciones en servidor evitan solapamientos y sobrecupos al inscribirte.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card h-100">
+                <h5 class="mb-2">Panel del coordinador</h5>
+                <p class="mb-0 text-muted">Accede al CRUD de cursos y gestiona matrículas desde una interfaz clara.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <a class="text-decoration-none" asp-controller="Cursos" asp-action="Index">
+                <small class="text-muted">Ir directamente al Catálogo de cursos →</small>
+            </a>
+        </div>
+    </div>
 </div>
