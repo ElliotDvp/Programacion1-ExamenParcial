@@ -13,28 +13,76 @@ namespace ExParcial.Controllers
         public MatriculasController(ApplicationDbContext context) => _context = context;
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int cursoId)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Forbid();
+            if (userId == null) return Challenge(); // no autenticado
 
+            var curso = await _context.Cursos.AsNoTracking().FirstOrDefaultAsync(c => c.Id == cursoId && c.Activo);
+            if (curso == null)
+            {
+                TempData["Error"] = "Curso no encontrado.";
+                return RedirectToAction("Details", "Cursos", new { id = cursoId });
+            }
+
+            // Verificar duplicado (ya matriculado en cualquier estado)
             if (await _context.Matriculas.AnyAsync(m => m.CursoId == cursoId && m.UsuarioId == userId))
-                return BadRequest("Usuario ya matriculado en este curso");
+            {
+                TempData["Error"] = "Ya se encuentra una matrícula para este curso.";
+                return RedirectToAction("Details", "Cursos", new { id = cursoId });
+            }
 
+            // Transacción para consistencia (cupo y evitar race)
             await using var tx = await _context.Database.BeginTransactionAsync();
-            var curso = await _context.Cursos.FindAsync(cursoId);
-            if (curso == null) return NotFound();
 
+            // Re-obtener curso con seguimiento para posible RowVersion (opcional)
+            var cursoForUpdate = await _context.Cursos.FirstOrDefaultAsync(c => c.Id == cursoId);
+            if (cursoForUpdate == null)
+            {
+                TempData["Error"] = "Curso no encontrado.";
+                return RedirectToAction("Details", "Cursos", new { id = cursoId });
+            }
+
+            // Contar matriculas confirmadas (o pendientes según la política)
             var inscritos = await _context.Matriculas.CountAsync(m => m.CursoId == cursoId && m.Estado == EstadoMatricula.Confirmada);
-            if (inscritos >= curso.CupoMaximo)
-                return BadRequest("Cupo máximo alcanzado");
+            if (inscritos >= cursoForUpdate.CupoMaximo)
+            {
+                TempData["Error"] = "Cupo máximo alcanzado.";
+                return RedirectToAction("Details", "Cursos", new { id = cursoId });
+            }
 
-            var matricula = new Matricula { CursoId = cursoId, UsuarioId = userId, Estado = EstadoMatricula.Confirmada };
+            // Verificar solapamiento horario con cursos ya matriculados (considerar aquellos Confirmada o Pendiente segun regla)
+            var userMatriculas = await _context.Matriculas
+                .Include(m => m.Curso)
+                .Where(m => m.UsuarioId == userId && m.Estado != EstadoMatricula.Cancelada)
+                .ToListAsync();
+
+            bool solapa = userMatriculas.Any(m =>
+                !(m.Curso.HorarioFin <= cursoForUpdate.HorarioInicio || m.Curso.HorarioInicio >= cursoForUpdate.HorarioFin)
+            );
+
+            if (solapa)
+            {
+                TempData["Error"] = "La inscripción se solapa con otro curso ya matriculado en el mismo horario.";
+                return RedirectToAction("Details", "Cursos", new { id = cursoId });
+            }
+
+            // Crear matrícula en estado Pendiente
+            var matricula = new Matricula
+            {
+                CursoId = cursoId,
+                UsuarioId = userId,
+                Estado = EstadoMatricula.Pendiente,
+                FechaRegistro = DateTime.UtcNow
+            };
+
             _context.Matriculas.Add(matricula);
             await _context.SaveChangesAsync();
             await tx.CommitAsync();
 
-            return Ok();
+            TempData["Success"] = "Inscripción creada en estado Pendiente.";
+            return RedirectToAction("Details", "Cursos", new { id = cursoId });
         }
     }
 }
