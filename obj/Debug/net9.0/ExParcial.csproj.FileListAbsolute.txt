@@ -292,3 +292,5 @@ E:\ing sistemas\programacion1\Practicas-Calificadas de Programacion 1\ExParcial\
 E:\ing sistemas\programacion1\Practicas-Calificadas de Programacion 1\ExParcial\obj\Debug\net9.0\ExParcial.pdb
 E:\ing sistemas\programacion1\Practicas-Calificadas de Programacion 1\ExParcial\obj\Debug\net9.0\ExParcial.genruntimeconfig.cache
 E:\ing sistemas\programacion1\Practicas-Calificadas de Programacion 1\ExParcial\obj\Debug\net9.0\ref\ExParcial.dll
+E:\ing sistemas\programacion1\Practicas-Calificadas de Programacion 1\ExParcial\bin\Debug\net9.0\Pipelines.Sockets.Unofficial.dll
+E:\ing sistemas\programacion1\Practicas-Calificadas de Programacion 1\ExParcial\bin\Debug\net9.0\StackExchange.Redis.dll
