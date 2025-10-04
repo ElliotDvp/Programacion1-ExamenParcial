@@ -26,6 +26,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Cursos" asp-action="Index">Catálogo de cursos</a>
                         </li>
+                        @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Coordinador"))
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Coordinador" asp-action="Index">Panel Coordinador</a>
+    </li>
+}
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
