@@ -53,26 +53,42 @@ public CoordinadorController(ApplicationDbContext context, IConnectionMultiplexe
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Curso curso)
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Edit(int id, Curso curso)
+{
+    if (id != curso.Id) return BadRequest();
+
+    if (!ModelState.IsValid)
     {
-        if (id != curso.Id) return BadRequest();
-        if (!ModelState.IsValid) return View(curso);
-
-        try
-        {
-            _context.Update(curso);
-            await _context.SaveChangesAsync();
-            if (_db != null) await _db.KeyDeleteAsync(ActiveCoursesKey);
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await _context.Cursos.AnyAsync(c => c.Id == id)) return NotFound();
-            throw;
-        }
-
-        return RedirectToAction(nameof(Index));
+        return View(curso);
     }
+
+    // Verificar unicidad de Codigo excepto para el mismo registro
+    var existe = await _context.Cursos
+        .AsNoTracking()
+        .AnyAsync(c => c.Codigo == curso.Codigo && c.Id != curso.Id);
+
+    if (existe)
+    {
+        ModelState.AddModelError(nameof(curso.Codigo), "El código ya está en uso por otro curso");
+        return View(curso);
+    }
+
+    try
+    {
+        _context.Update(curso);
+        await _context.SaveChangesAsync();
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+        if (!await _context.Cursos.AnyAsync(e => e.Id == curso.Id))
+            return NotFound();
+        throw;
+    }
+
+    return RedirectToAction(nameof(Index));
+}
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]
