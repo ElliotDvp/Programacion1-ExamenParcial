@@ -32,6 +32,22 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/ing sistemas/programacion1/Practicas-Calificadas de Programacion 1/ExParcial/Views/Coordinador/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29vcmRpbmFkb3JcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/ing sistemas/programacion1/Practicas-Calificadas de Programacion 1/ExParcial/Views/Coordinador/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29vcmRpbmFkb3JcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/ing sistemas/programacion1/Practicas-Calificadas de Programacion 1/ExParcial/Views/Coordinador/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29vcmRpbmFkb3JcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/ing sistemas/programacion1/Practicas-Calificadas de Programacion 1/ExParcial/Views/Coordinador/Matriculas.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29vcmRpbmFkb3JcTWF0cmljdWxhcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/ing sistemas/programacion1/Practicas-Calificadas de Programacion 1/ExParcial/Views/Cursos/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3Vyc29zXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
