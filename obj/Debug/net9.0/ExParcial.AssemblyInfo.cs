@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ExParcial")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+00278015edfa3caac3be918e4fa4ffe5ea329498")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a7ce95b208a936043d890797521f1df9ac3cb09a")]
 [assembly: System.Reflection.AssemblyProductAttribute("ExParcial")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ExParcial")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
