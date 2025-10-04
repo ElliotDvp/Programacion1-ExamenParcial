@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ExParcial.Data;
+using StackExchange.Redis;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,24 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+// Redis configuration from appsettings
+var redisSection = builder.Configuration.GetSection("Redis");
+var host = redisSection.GetValue<string>("Host");
+var port = redisSection.GetValue<int>("Port");
+var user = redisSection.GetValue<string>("User");
+var password = redisSection.GetValue<string>("Password");
 
+var redisConfig = new ConfigurationOptions
+{
+    AbortOnConnectFail = false
+};
+redisConfig.EndPoints.Add(host, port);
+if (!string.IsNullOrEmpty(user)) redisConfig.User = user;
+if (!string.IsNullOrEmpty(password)) redisConfig.Password = password;
+
+// Connect and register IConnectionMultiplexer singleton
+var muxer = ConnectionMultiplexer.Connect(redisConfig);
+builder.Services.AddSingleton<IConnectionMultiplexer>(muxer);
 
 var app = builder.Build();
 
@@ -27,13 +46,12 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -45,6 +63,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages()
    .WithStaticAssets();
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -67,4 +86,5 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(coordUser, roleName);
     }
 }
+
 app.Run();
